@@ -46,9 +46,7 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
-
+    
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
@@ -58,13 +56,6 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
       
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_211690DE3A1B4838928BF4155C987F5D }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E3A8CC05E14341B8BEDBC32C5A902165 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_9B2C4B4C2E17433AB17AA57E5054B8CB }}
-
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
@@ -72,4 +63,4 @@ jobs:
           app-name: 'PHP-BOB'
           slot-name: 'Production'
           package: .
-          
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_6B5E7C7D9DFE407C806693ED4568330B }}
